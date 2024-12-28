@@ -1,101 +1,52 @@
-import Image from "next/image";
-
+"use client"
+import Navbar from "@/components/navbar";
+import { set } from "mongoose";
+import { useState } from "react";
 export default function Home() {
+  const [light, setlight] = useState("0%");
+  const [gray, setgray] = useState("#4b5563")
+  const [white, setwhite] = useState("white")
+  const handlelight=()=>{
+    setlight("0%");
+    setwhite("white");
+    setgray("#4b5563");
+  }
+  const handledark=()=>{
+    setlight("50%");
+    setwhite("#4b5563");
+    setgray("white");
+  }
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <>
+      <div className="absolute -z-10 bg-[#05081f] w-full h-full"></div>
+      <Navbar />
+      <div className="text-4xl w-fit mx-auto pt-14 font-semibold bg-gradient-to-r from-[#fe006d] to-[#023eff] bg-clip-text text-transparent">Shorten Your Loooong Links :) </div>
+      <p className="w-1/3 mt-4 text-md mx-auto text-center">Linkio is an efficient and easy-to-use URL shortening service that streamlines your online experiences</p>
+      <div className="border-2 border-gray-600 w-[40%] h-11 pl-3 rounded-full mx-auto flex items-center justify-between mt-2" >
+        <div className="flex items-center gap-4 w-[70%]">
+          <span className="material-symbols-outlined">
+            link
+          </span>
+          <input type="text" placeholder="Enter Link Here" className="bg-transparent outline-0 text-base w-full" />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <button className="bg-[#0700ff] py-2 rounded-full px-4 font-semibold">Shorten Now!</button>
+      </div>
+      <div className="flex  justify-between border-2 border-gray-600 w-52 rounded-full absolute  rotate-90 -right-16">
+        <span style={{left:light}} className="bg-[#023eff] absolute w-1/2 h-full transition-all duration-200 -z-20 rounded-full blue-span"></span>
+        <div onClick={handlelight} className="light cursor-pointer w-1/2 flex items-center gap-3 px-2 py-2">
+          <span style={{color:white}} className="text-white font-semibold">Light</span>
+
+          <span style={{color:white}} className="material-symbols-outlined text-white">
+            light_mode
+          </span>
+        </div>
+        <div onClick={handledark} className="dark cursor-pointer w-1/2 flex items-center justify-end gap-3 px-2 py-2">
+          <span style={{color:gray}} className="text-gray-600 font-semibold">Dark</span>
+          <span style={{color:gray}} className="material-symbols-outlined">
+              dark_mode
+            </span>
+        </div>
+      </div>
+    </>
   );
 }
