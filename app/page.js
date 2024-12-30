@@ -1,8 +1,9 @@
 "use client"
-import Links from "@/components/links";
 import Navbar from "@/components/navbar";
 import { useState } from "react";
 import { Client, Databases, ID } from 'appwrite';
+import { ToastContainer, toast, Bounce } from 'react-toastify';
+import Link from "next/link";
 export default function Home() {
   const client = new Client();
   client.setProject(process.env.NEXT_PUBLIC_PROJECT)
@@ -10,32 +11,84 @@ export default function Home() {
   const [light, setlight] = useState("0%");
   const [gray, setgray] = useState("#4b5563")
   const [white, setwhite] = useState("white")
+  const [link, setlink] = useState({
+    value: "",
+    stat: false
+  })
+  const [error, seterror] = useState(false)
   const [inputs, setinputs] = useState({
     link: "",
     keyword: ""
   })
   const handlelight = () => {
+    if(document.querySelector("html").classList.contains("dark")){
+      document.querySelector("html").classList.remove("dark")
+    }
     setlight("0%");
     setwhite("white");
     setgray("#4b5563");
   }
   const handledark = () => {
+    document.querySelector("html").classList.add("dark")
     setlight("50%");
     setwhite("#4b5563");
     setgray("white");
   }
-  const handlesubmission = () => {
+  const handlesubmission = async () => {
+    document.querySelector(".btn").disabled = true;
+    if (inputs.link === "" || inputs.keyword === "") {
+      document.querySelector(".btn").disabled = false;
+      return
+    }
+    try {
+      new URL(inputs.link);
+    } catch (e) {
+      document.querySelector(".btn").disabled = false;
+      toast.error("Enter a valid URL", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      return;
+    }
+    const e = await databases.listDocuments(
+      process.env.NEXT_PUBLIC_DB_ID,
+      process.env.NEXT_PUBLIC_COLLECTION,
+    )
+    for (const element of e.documents) {
+      if (element.keyword === inputs.keyword) {
+        document.querySelector(".btn").disabled = false;
+        seterror(true)
+        setTimeout(() => {
+          seterror(false);
+        }, 4000);
+        return
+      }
+
+    }
     databases.createDocument(
       process.env.NEXT_PUBLIC_DB_ID,
       process.env.NEXT_PUBLIC_COLLECTION,
       ID.unique(),
-      { URL: inputs.link, keyword: inputs.keyword, clicks: 0, Date: new Date().toLocaleDateString() }
+      { URL: inputs.link, keyword: inputs.keyword }
 
     ).then(() => {
+      setlink({
+        value: inputs.keyword,
+        stat: true
+      })
       setinputs({
         link: "",
         keyword: ""
       })
+      document.querySelector(".btn").disabled = false;
+
     })
   }
   const handlechange = (e) => {
@@ -46,21 +99,37 @@ export default function Home() {
   }
   return (
     <>
-      <div className="absolute -z-10 bg-[#05081f] w-full h-full"></div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
+      <div className="absolute -z-10  w-full h-full bg-[#e0dcff] dark:bg-[#05081f]"></div>
       <Navbar />
-      <div className="text-4xl w-fit mx-auto pt-8 font-semibold bg-gradient-to-r from-[#fe006d] to-[#023eff] bg-clip-text text-transparent">Shorten Your Loooong Links :) </div>
-      <p className="w-1/3 mt-4 text-md mx-auto text-center">Linkio is an efficient and easy-to-use URL shortening service that streamlines your online experiences</p>
-      <div className="flex items-center justify-center gap-9  mt-4">
+      <div className="sm:text-4xl text-2xl w-fit mx-auto pt-8 font-semibold bg-gradient-to-r from-[#fe006d] to-[#023eff] bg-clip-text text-transparent">Shorten Your Loooong Links :) </div>
+      <p className="sm:w-1/3 w-[80%] mt-4 text-md mx-auto text-center text-blue-800 font-bold dark:text-white dark:font-normal">Linkio is an efficient and easy-to-use URL shortening service that streamlines your online experiences</p>
+      <div className="flex items-center sm:flex-row flex-col  justify-center gap-9  mt-4">
 
-        <div className="border-2 border-gray-600 w-[30%] h-11 pl-3 rounded-full flex items-center justify-between mt-2" >
-          <input onChange={handlechange} value={inputs.link} name="link" type="text" placeholder="Enter Link Here" className="bg-transparent outline-0 text-base w-full" />
+        <div className="border-2 border-gray-600 w-[70%] sm:w-[30%] h-11 pl-5 rounded-full flex items-center justify-between mt-2 text-black dark:text-white " >
+          <input onChange={handlechange} value={inputs.link} name="link" type="text" placeholder="Enter Link Here" className="bg-transparent outline-0 text-base w-full placeholder:text-black placeholder:dark:text-gray-500" />
         </div>
-        <div className="border-2 border-gray-600 w-[30%] h-11 pl-3 rounded-full  flex items-center justify-between mt-2" >
-          <input onChange={handlechange} value={inputs.keyword} name="keyword" type="text" placeholder="Enter keyword Here" className="bg-transparent outline-0 text-base w-full" />
+        <div className="border-2 border-gray-600 w-[70%] sm:w-[30%] h-11 pl-5 rounded-full  flex items-center justify-between mt-2 text-black dark:text-white" >
+          <input onChange={handlechange} value={inputs.keyword} name="keyword" type="text" placeholder="Enter keyword Here" className="bg-transparent outline-0 text-base w-full placeholder:text-black placeholder:dark:text-gray-500 placeholder:font-thin" />
         </div>
       </div>
-      <div onClick={handlesubmission} className="bg-[#0700ff] py-2 rounded-full px-4 font-semibold text-md my-4 w-fit cursor-pointer mx-auto hover:shadow-[#0700ff] shadow-black transition-all shadow-md">Shorten Now!</div>
-      <div className="flex  justify-between border-2 border-gray-600 w-52 rounded-full absolute  rotate-90 -right-16">
+      <div className="w-full text-center">
+
+        <button onClick={handlesubmission} className="btn bg-[#0700ff] py-2 rounded-full px-4 font-semibold text-md my-10  cursor-pointer hover:shadow-[#0700ff] shadow-black transition-all shadow-md disabled:bg-[#0d0b57]">Shorten Now!</button>
+      </div>
+      <div className="flex  justify-between border-2 border-gray-600 w-52 top-1/2 rounded-full absolute  rotate-90 -right-20 sm:-right-16">
         <span style={{ left: light }} className="bg-[#023eff] absolute w-1/2 h-full transition-all duration-200 -z-20 rounded-full blue-span"></span>
         <div onClick={handlelight} className="light cursor-pointer w-1/2 flex items-center gap-3 px-2 py-2">
           <span style={{ color: white }} className="text-white font-semibold">Light</span>
@@ -76,7 +145,13 @@ export default function Home() {
           </span>
         </div>
       </div>
-      <Links />
+      {error && <div className="text-center mt-4 text-red-600">Choose different keyword</div>}
+      {link.stat &&
+        <div className="w-full text-center">
+          <h2 className="font-bold text-red-600 dark:text-green-400 text-lg">Your Shorten Link is <Link className="font-normal underline text-amber-700 dark:text-yellow-400" href={"http://localhost:3000/" + link.value}>{"http://localhost:3000/" + link.value}</Link></h2>
+
+        </div>
+        || <span className="font-bold text-xl mt-7 text-center w-full block text-red-500 dark:text-gray-500">Your link Appear here</span> }
     </>
   );
 }

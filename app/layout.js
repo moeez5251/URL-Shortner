@@ -26,9 +26,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com"></link>
       </head>
       <body
-        className={`${roboto} antialiased`}
+        className={`font-roboto`}
       >
         {children}
       </body>

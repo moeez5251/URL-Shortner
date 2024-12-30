@@ -5,8 +5,12 @@ export default {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        roboto: ['Roboto', 'serif'],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
