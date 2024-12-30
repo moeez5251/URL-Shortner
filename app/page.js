@@ -148,7 +148,7 @@ export default function Home() {
       {error && <div className="text-center mt-4 text-red-600">Choose different keyword</div>}
       {link.stat &&
         <div className="w-full text-center">
-          <h2 className="font-bold text-red-600 dark:text-green-400 text-lg">Your Shorten Link is <Link className="font-normal underline text-amber-700 dark:text-yellow-400" href={"http://localhost:3000/" + link.value}>{"http://localhost:3000/" + link.value}</Link></h2>
+          <h2 className="font-bold text-red-600 dark:text-green-400 text-lg">Your Shorten Link is <Link className="font-normal underline text-amber-700 dark:text-yellow-400" href={"https://linkio.netlify.app/" + link.value}>{"https://linkio.netlify.app/" + link.value}</Link></h2>
 
         </div>
         || <span className="font-bold text-xl mt-7 text-center w-full block text-red-500 dark:text-gray-500">Your link Appear here</span> }
