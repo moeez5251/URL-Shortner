@@ -19,7 +19,7 @@ Your ultimate tool to transform long, messy URLs into neat, shareable links!
 ## How to Use It 💡  
 
 1. **Paste a long URL** into the input box.  
-2. **Add an optional keyword** to personalize your link.  
+2. **Add an  keyword** to personalize your link.  
 3. **Click the “Shorten Now!” button** ✂️✨  
 4. Get your **new, shiny URL** to share with the world! 🌍  
 

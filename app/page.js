@@ -1,6 +1,6 @@
 "use client"
 import Navbar from "@/components/navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Client, Databases, ID } from 'appwrite';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import Link from "next/link";
@@ -20,8 +20,35 @@ export default function Home() {
     link: "",
     keyword: ""
   })
+  useEffect(() => {
+    setTimeout(() => {
+      document.querySelector(".fixed").style.top = "-200%";
+    }, 2000);
+
+    if (localStorage.getItem("theme") === "dark") {
+      document.querySelector("html").classList.add("dark")
+      setlight("50%");
+      setwhite("#4b5563");
+      setgray("white");
+    }
+    else if (localStorage.getItem("theme") === "light") {
+      document.querySelector("html").classList.remove("dark")
+      setlight("0%");
+      setwhite("white");
+      setgray("#4b5563");
+    }
+    else {
+      localStorage.setItem("theme", "light");
+    }
+    return () => {
+
+    }
+  }, [])
+
   const handlelight = () => {
-    if(document.querySelector("html").classList.contains("dark")){
+    if (document.querySelector("html").classList.contains("dark")) {
+      localStorage.removeItem("theme");
+      localStorage.setItem("theme", "light")
       document.querySelector("html").classList.remove("dark")
     }
     setlight("0%");
@@ -29,6 +56,8 @@ export default function Home() {
     setgray("#4b5563");
   }
   const handledark = () => {
+    localStorage.removeItem("theme");
+    localStorage.setItem("theme", "dark");
     document.querySelector("html").classList.add("dark")
     setlight("50%");
     setwhite("#4b5563");
@@ -99,6 +128,18 @@ export default function Home() {
   }
   return (
     <>
+      <div className="fixed w-full top-0 duration-300 transition-all h-full bg-[#e0dcff] z-20 flex items-center justify-center">
+        <div className="flex-col gap-4 w-full flex items-center justify-center">
+          <div
+            className="w-20 h-20 border-4 border-transparent text-[#023eff] text-4xl animate-spin flex items-center justify-center border-t-[#023eff] rounded-full"
+          >
+            <div
+              className="w-16 h-16 border-4 border-transparent text-[#fe006d] text-2xl animate-spin flex items-center justify-center border-t-[#fe006d] rounded-full"
+            ></div>
+          </div>
+        </div>
+
+      </div>
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -127,7 +168,7 @@ export default function Home() {
       </div>
       <div className="w-full text-center">
 
-        <button onClick={handlesubmission} className="btn bg-[#0700ff] py-2 rounded-full px-4 font-semibold text-md my-10  cursor-pointer hover:shadow-[#0700ff] shadow-black transition-all shadow-md disabled:bg-[#0d0b57]">Shorten Now!</button>
+        <button onClick={handlesubmission} className="btn bg-[#0700ff] py-2 rounded-full px-4 font-semibold text-md my-10  cursor-pointer hover:shadow-[#0700ff] shadow-black transition-all shadow-md disabled:bg-[#0d0b57] text-white">Shorten Now!</button>
       </div>
       <div className="flex  justify-between border-2 border-gray-600 w-52 top-1/2 rounded-full absolute  rotate-90 -right-20 sm:-right-16">
         <span style={{ left: light }} className="bg-[#023eff] absolute w-1/2 h-full transition-all duration-200 -z-20 rounded-full blue-span"></span>
@@ -147,11 +188,15 @@ export default function Home() {
       </div>
       {error && <div className="text-center mt-4 text-red-600">Choose different keyword</div>}
       {link.stat &&
-        <div className="w-full text-center">
-          <h2 className="font-bold text-red-600 dark:text-green-400 text-lg">Your Shorten Link is <Link className="font-normal underline text-amber-700 dark:text-yellow-400" href={"https://linkio.netlify.app/" + link.value}>{"https://linkio.netlify.app/" + link.value}</Link></h2>
-
+        <div className="w-full text-center flex items-center justify-center gap-2 mt-4">
+          <h2 className="font-bold text-red-600 dark:text-green-400 text-lg">Your Shorten Link is <Link className="link font-normal underline text-amber-700 dark:text-yellow-400" target="_blank" href={"https://linkio.netlify.app/" + link.value}>{"https://linkio.netlify.app/" + link.value}</Link></h2>
+          <span onClick={() => {
+            navigator.clipboard.writeText(document.querySelector(".link").innerHTML)
+          }} title="copy" className="material-symbols-outlined cursor-pointer dark:text-white">
+            content_copy
+          </span>
         </div>
-        || <span className="font-bold text-xl mt-7 text-center w-full block text-red-500 dark:text-gray-500">Your link Appear here</span> }
+        || <span className="font-bold text-xl mt-7 text-center w-full block text-red-500 dark:text-gray-500">Your link Appear here</span>}
     </>
   );
 }

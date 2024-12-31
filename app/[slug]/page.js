@@ -17,6 +17,6 @@ export default async function Page({ params }) {
         redirect(red.URL);
     }
     else{
-        redirect('/');
+        redirect('/error');
     }
 }
