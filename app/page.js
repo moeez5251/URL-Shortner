@@ -188,13 +188,17 @@ export default function Home() {
       </div>
       {error && <div className="text-center mt-4 text-red-600">Choose different keyword</div>}
       {link.stat &&
-        <div className="w-full text-center flex items-center justify-center gap-2 mt-4">
-          <h2 className="font-bold text-red-600 dark:text-green-400 text-lg">Your Shorten Link is <Link className="link font-normal underline text-amber-700 dark:text-yellow-400" target="_blank" href={"https://linkio.netlify.app/" + link.value}>{"https://linkio.netlify.app/" + link.value}</Link></h2>
+        <div className="w-full text-center  flex items-center flex-col sm:flex-row justify-center gap-2 ">
+          <h2 className="font-bold text-red-600 dark:text-green-400 text-sm sm:text-lg">Your Shorten Link is</h2> 
+          <div className="flex items-center gap-2">
+
+          <Link className="link font-normal underline text-amber-700 dark:text-yellow-400" target="_blank" href={"https://linkio.netlify.app/" + link.value}>{"https://linkio.netlify.app/" + link.value}</Link>
           <span onClick={() => {
             navigator.clipboard.writeText(document.querySelector(".link").innerHTML)
-          }} title="copy" className="material-symbols-outlined cursor-pointer dark:text-white">
+          }} title="copy" className="material-symbols-outlined cursor-pointer text-gray-500  dark:text-white">
             content_copy
           </span>
+            </div>
         </div>
         || <span className="font-bold text-xl mt-7 text-center w-full block text-red-500 dark:text-gray-500">Your link Appear here</span>}
     </>
