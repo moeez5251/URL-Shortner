@@ -23,7 +23,7 @@ const error = () => {
     return (
         <>
             <div className='flex justify-center items-center h-screen flex-col bg-[#e0dcff] dark:bg-[#05081f]'>
-                <Image priority={true} className='dark:hue-rotate-30' src="/not-found.png" alt="Picture of the author" width={500} height={500} loading='eager' />
+                <Image priority={true} className='dark:hue-rotate-30' src="/not-found.png" alt="Not found" width={500} height={500} loading='eager' />
                 <span className='font-bold text-xl text-black dark:text-white'>Go Back to <Link className='text-red-700 underline dark:text-yellow-500' href="/">Home</Link></span>
             </div>
         </>
