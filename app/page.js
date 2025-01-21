@@ -1,7 +1,7 @@
 "use client"
 import Navbar from "@/components/navbar";
 import { useState, useEffect } from "react";
-import { Client, Databases, ID } from 'appwrite';
+import { Client, Databases, ID ,Query} from 'appwrite';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import Link from "next/link";
 export default function Home() {
@@ -86,11 +86,29 @@ export default function Home() {
       });
       return;
     }
-    const e = await databases.listDocuments(
-      process.env.NEXT_PUBLIC_DB_ID,
-      process.env.NEXT_PUBLIC_COLLECTION,
-    )
-    for (const element of e.documents) {
+    let limit = 100;
+    let offset = 0;
+    let allDocuments = [];
+    let hasMore = true;
+    while (hasMore) {
+      let response = await databases.listDocuments(
+        process.env.NEXT_PUBLIC_DB_ID,
+        process.env.NEXT_PUBLIC_COLLECTION,
+        [
+          Query.limit(limit),
+          Query.offset(offset)
+        ]
+      );
+
+      allDocuments.push(...response.documents);
+
+      if (response.documents.length < limit) {
+        hasMore = false;
+      } else {
+        offset += limit;
+      }
+    }
+    for (const element of allDocuments) {
       if (element.keyword === inputs.keyword) {
         document.querySelector(".btn").disabled = false;
         seterror(true)
@@ -189,16 +207,16 @@ export default function Home() {
       {error && <div className="text-center mt-4 text-red-600">Choose different keyword</div>}
       {link.stat &&
         <div className="w-full text-center  flex items-center flex-col sm:flex-row justify-center gap-2 ">
-          <h2 className="font-bold text-red-600 dark:text-green-400 text-lg">Your Shorten Link is</h2> 
+          <h2 className="font-bold text-red-600 dark:text-green-400 text-lg">Your Shorten Link is</h2>
           <div className="flex items-center gap-2">
 
-          <Link className="link font-normal underline text-amber-700 dark:text-yellow-400" target="_blank" href={"https://linkio.netlify.app/" + link.value}>{"https://linkio.netlify.app/" + link.value}</Link>
-          <span onClick={() => {
-            navigator.clipboard.writeText(document.querySelector(".link").innerHTML)
-          }} title="copy" className="material-symbols-outlined cursor-pointer text-gray-500  dark:text-white">
-            content_copy
-          </span>
-            </div>
+            <Link className="link font-normal underline text-amber-700 dark:text-yellow-400" target="_blank" href={"https://linkio.netlify.app/" + link.value}>{"https://linkio.netlify.app/" + link.value}</Link>
+            <span onClick={() => {
+              navigator.clipboard.writeText(document.querySelector(".link").innerHTML)
+            }} title="copy" className="material-symbols-outlined cursor-pointer text-gray-500  dark:text-white">
+              content_copy
+            </span>
+          </div>
         </div>
         || <span className="font-bold text-xl mt-7 text-center w-full block text-red-500 dark:text-gray-500">Your link Appear here</span>}
     </>
