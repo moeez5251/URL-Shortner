@@ -3,38 +3,24 @@ import { Client, Databases, Query } from 'appwrite';
 const client = new Client();
 client.setProject(process.env.NEXT_PUBLIC_PROJECT)
 const databases = new Databases(client);
-let limit = 100;  
-let offset = 0;
-let allDocuments = [];
-let hasMore = true;
 export default async function Page({ params }) {
     const slug = await params;
-   while (hasMore) {
-        let response = await databases.listDocuments(
-            process.env.NEXT_PUBLIC_DB_ID,
-            process.env.NEXT_PUBLIC_COLLECTION,
-            [
-                Query.limit(limit),
-                Query.offset(offset)
-            ]
-        );
+    const response = await databases.listDocuments(
+        process.env.NEXT_PUBLIC_DB_ID,
+        process.env.NEXT_PUBLIC_COLLECTION,
+        [
+            Query.equal("keyword", slug.slug)
+        ]
+    );
+    if (response) {
+        const red = response.documents[0];
 
-    allDocuments.push(...response.documents);
+        if (red) {
 
-        if (response.documents.length < limit) {
-            hasMore = false;
-        } else {
-            offset += limit; 
+            redirect(red.URL);
         }
-    }
-    let red = allDocuments.find(e => {
-        return e.keyword === slug.slug;
-    })
-    if(red){
-
-        redirect(red.URL);
-    }
-    else{
-        redirect('/error');
+        else {
+            redirect('/error');
+        }
     }
 }
